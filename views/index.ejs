@@ -1,39 +1,54 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-  <title>timeStamp</title>
+  <title>urlShortener</title>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 </head>
+
 <body>
 
-<div class="jumbotron text-center">
-  <h1>timestamp microservice</h1>
-  <p>API Basejump</p>
-</div>
+  <div class="jumbotron text-center">
+    <h1>url shortener</h1>
+    <p>API Basejump</p>
+  </div>
 
-<div class="container">
-	<h2>User stories:</h2><br>
-	<blockquote>
-<ul> 1) I can pass a string as a parameter, and it will check to see whether that string contains either a unix timestamp or a natural language date (example: January 1, 2016)</ul>
-<ul> 2) If it does, it returns both the Unix timestamp and the natural language form of that date.</ul>
-<ul> 3) If it does not contain a date or Unix timestamp, it returns null for those properties.</ul>
-</blockquote>
+  <div class="container">
+    <h2>User stories:</h2><br>
+    <blockquote>
+      <ul> 1) I can pass a URL as a parameter and I will receive a shortened URL in the JSON response.
+</ul>
+<ul> 2) When I visit that shortened URL, it will redirect me to my original link.
+</ul>
 
-<h2>Sample Input</h2>
+    </blockquote>
 
-<code>https://timestamp-kalpitp.herokuapp.com/December%2015,%202015</code><br>
-<code>https://timestamp-kalpitp.herokuapp.com/1450137600</code><br>
+    <h2>Sample Input</h2>
 
-<h2>Sample Output</h2><br>
+    <code>https://little-url.herokuapp.com/new/https://www.google.com</code><br>
 
-<code>
-	 { "unix": 1450137600, "natural": "December 15, 2015" }
- </code>
-</div>
+    <h2>Sample Output</h2><br>
+
+    <code>
+
+      { "original_url":"http://foo.com:80", "short_url":"https://little-url.herokuapp.com/8170" }
+
+    </code>
+
+    <h2>Sample Usage</h2><br>
+
+    <code>
+
+      https://little-url.herokuapp.com/2871
+
+    </code>
+
+  </div>
 
 </body>
+
 </html>
