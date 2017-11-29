@@ -19,7 +19,7 @@ app.set('view engine', 'ejs');
 // make express look in the public directory for assets (css/js/img)
 app.use(express.static(__dirname + '/public'));
 
-MongoClient.connect("mongodb://freeCodeCamp:heroku@ds123896.mlab.com:23896/heroku_p5r3tw5z", (err, database) => {
+MongoClient.connect("mongodb://<name>:<pw>@ds123896.mlab.com:23896/heroku_p5r3tw5z", (err, database) => {
   if (err) return console.log(err)
   db = database
   app.listen(port, () => {
