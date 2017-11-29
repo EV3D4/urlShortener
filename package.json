@@ -5,12 +5,14 @@
   "scripts": {
     "start": "node index.js",
     "dev": "nodemon index.js"
-
   },
   "dependencies": {
     "boostrap": "^2.0.0",
     "ejs": "~1.0.0",
-    "express": "~4.9.8"
+    "express": "~4.9.8",
+    "mongodb": "^2.2.33",
+    "url-exists": "^1.0.3",
+    "valid-url": "^1.0.9"
   },
   "devDependencies": {
     "nodemon": "^1.12.1"

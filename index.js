@@ -1,5 +1,13 @@
 var express = require('express');
 var app = express();
+var urlExists = require('url-exists');
+var validUrl = require('valid-url');
+var request = require('request');
+
+var home="https://urlshortener-kalpitp.herokuapp.com/"
+
+const MongoClient = require('mongodb').MongoClient
+
 
 // set the port of our application
 // process.env.PORT lets the port be set by Heroku
@@ -11,134 +19,72 @@ app.set('view engine', 'ejs');
 // make express look in the public directory for assets (css/js/img)
 app.use(express.static(__dirname + '/public'));
 
-app.get(['/','/about'], function(req, res) {
-  // ejs render automatically looks in the views folder
+MongoClient.connect("mongodb://freeCodeCamp:heroku@ds123896.mlab.com:23896/heroku_p5r3tw5z", (err, database) => {
+  if (err) return console.log(err)
+  db = database
+  app.listen(port, () => {
 
-  res.render('index');
+
+  })
+})
+
+
+app.get(['/', '/about'], function(req, res) {
+  // ejs render automatically looks in the views folder
+  res.render('index.ejs')
 });
+
 
 app.get('/:Qpath', (req, res) => {
-
-  var id = req.params.Qpath;
-  var timestamp
-  var myDate
-  var unix
-  var date
-  var month
-  var re
-  var naturalDate
-
-
-  if (isNaN(id)) {
-
-    id = id.replace(/%20|\+|\//g, '');
-
-    re = /January|Febuary|March|April|May|June|July|August|September|October|November|December/i;
-
-    month = id.match(re);
-
-    id = id.replace(re, "");
-
-    date = month + " " + id.slice(0, 3) + ", " + id.slice(4, 9);
-
-    myDate = new Date(date);
-    unix = myDate.getTime();
-
-    if (!isNaN(unix))
-      timestamp = {
-        "unix": unix,
-        "natural": date
-      }
+  db.collection('shortURL').find({
+    "short_url": home + req.params.Qpath
+  }).toArray((err, result) => {
+    if (err) return console.log(err)
+    else if (result.length == 0)
+      res.write("Invalid Request")
     else
-      timestamp = {
-        "unix": null,
-        "natural": null
-      }
-  } else {
+      res.writeHead(302, {
+        'Location': "https://" + result[0].original_url
+      });
+    res.end();
+  })
+})
 
-    naturalDate = new Date(id * 1000);
 
-    switch (naturalDate.getMonth()) {
 
-      case 0:
-        month = "January";
-        break;
+app.get('/new/https://:Qpath', (req, res) => {
+var dbObj
+var link = new Date()
 
-      case 1:
-        month = "February";
-        break;
+hexString = (link.getYear() + link.getMonth() + link.getSeconds()).toString(16);
+var urlType = 'https://' + req.params.Qpath
 
-      case 2:
-        month = "March";
-        break;
 
-      case 3:
-        month = "April";
-        break;
 
-      case 4:
-        month = "May";
-        break;
+request(urlType, function(error, response, body) {
+  if (!error && response.statusCode == 200) {
 
-      case 5:
-        month = "June";
-        break;
-
-      case 6:
-        month = "July";
-        break;
-
-      case 7:
-        month = "August";
-        break;
-
-      case 8:
-        month = "September";
-        break;
-
-      case 9:
-        month = "October";
-        break;
-
-      case 10:
-        month = "November";
-        break;
-
-      case 11:
-        month = "December";
-        break;
+    dbObj = {
+      original_url: req.params.Qpath,
+      short_url: home + hexString
     }
 
+    db.collection('shortURL').save(dbObj, (err, result) => {
+      if (err) return console.log(err)
+      res.writeHead(200, {
+        'Content-Type': 'application/json'
+      });
+      res.end(JSON.stringify(dbObj));
+    })
 
-    date = naturalDate.getDate();
-
-    myDate= month + " " + date + ", " + naturalDate.getFullYear();
-
-    myDate = new Date(myDate);
-
-    unix = myDate.getTime();
-
-    if (!isNaN(unix))
-          timestamp = {
-        "unix": id,
-        "natural": month + " " + date + ", " + naturalDate.getFullYear()
-      }
-    else
-
-      timestamp = {
-        "unix": null,
-        "natural": null
-      }
-
+  } else {
+    dbObj = "URL Does Not Exsist"
+    res.writeHead(200, {
+      'Content-Type': 'application/json'
+    });
+    res.end(JSON.stringify(dbObj));
   }
 
-  res.writeHead(200, {
-    'Content-Type': 'application/json'
-  });
-  res.end(JSON.stringify(timestamp));
+})
 
-});
-
-app.listen(port, function() {
-  console.log('Our app is running on http://localhost:' + port);
-});
+})
