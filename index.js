@@ -52,7 +52,7 @@ app.get('/:Qpath', (req, res) => {
 
 
 
-app.get('/new/https://:Qpath', (req, res) => {
+app.get('/new/https://www.:Qpath', (req, res) => {
 var dbObj
 var link = new Date()
 
